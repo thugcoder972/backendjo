@@ -1,23 +1,38 @@
 package com.mysycorp.Backendjo.entity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+
 @Entity
 public class Ticket {
-@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String seat;
-    private boolean used;  // Utilisez uniquement 'used'
+    private boolean used;  // Utilisez 'used' pour indiquer si le ticket est utilisé
+    private Double price;  // Ajout d'un attribut pour le prix
+
+    @ManyToOne
+    @JoinColumn(name = "epreuve_sportive_id")
+    private EpreuveSportive epreuveSportive;
 
     @ManyToOne
     @JoinColumn(name = "achat_id")
     private Achat achat;
 
+    @ManyToOne
+    @JoinColumn(name = "tarif_id")
+    private Tarif tarif; // Relation avec Tarif
+
+    @OneToOne
+    @JoinColumn(name = "token_ticket_id")
+    private TokenTicket tokenTicket;
     // Getters and Setters
     public Long getId() {
         return id;
@@ -51,13 +66,20 @@ public class Ticket {
         this.achat = achat;
     }
 
-    public Object getPrice() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPrice'");
+    public Tarif getTarif() {
+        return tarif; // Getter pour le tarif
     }
 
-    public void setPrice(Object price) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPrice'");
+    public void setTarif(Tarif tarif) {
+        this.tarif = tarif; // Setter pour le tarif
+    }
+
+    // Méthodes pour le prix
+    public Double getPrice() {
+        return price; // Getter pour le prix
+    }
+
+    public void setPrice(Double price) {
+        this.price = price; // Setter pour le prix
     }
 }

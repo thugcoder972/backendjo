@@ -1,6 +1,5 @@
 package com.mysycorp.Backendjo.entity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -8,25 +7,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
-public class Achat {
-  @Id
+public class TokenUser {
+
+@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
-    @ManyToOne
-    @JoinColumn(name = "tarif_id") // Associe un achat à un tarif
-    private Tarif tarif;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "achat")
-    private List<Ticket> tickets;
+    @OneToMany(mappedBy = "tokenUser")
+    private List<AssociationToken> associations;
 
     // Getters and Setters
     public Long getId() {
@@ -37,14 +33,6 @@ public class Achat {
         this.id = id;
     }
 
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
     public User getUser() {
         return user;
     }
@@ -53,12 +41,12 @@ public class Achat {
         this.user = user;
     }
 
-    public List<Ticket> getTickets() {
-        return tickets;
+    public List<AssociationToken> getAssociations() {
+        return associations;
     }
 
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }  
-
+    public void setAssociations(List<AssociationToken> associations) {
+        this.associations = associations;
+    }
 }
+

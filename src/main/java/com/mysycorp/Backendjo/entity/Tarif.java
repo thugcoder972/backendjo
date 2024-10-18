@@ -8,16 +8,23 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Tarif {
-@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Double price;
-     
-    //relation
-    
+
+    // Relation avec EpreuveSportive (facultatif)
     @ManyToOne
     private EpreuveSportive epreuveSportive;
+
+    // Relation avec Ticket
+    @ManyToOne
+    private Ticket ticket;
+
+    // Relation avec Achat (si besoin)
+    @ManyToOne
+    private Achat achat;
 
     // Getters and Setters
     public Long getId() {
@@ -42,5 +49,21 @@ public class Tarif {
 
     public void setEpreuveSportive(EpreuveSportive epreuveSportive) {
         this.epreuveSportive = epreuveSportive;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    public Achat getAchat() {
+        return achat;
+    }
+
+    public void setAchat(Achat achat) {
+        this.achat = achat;
     }
 }

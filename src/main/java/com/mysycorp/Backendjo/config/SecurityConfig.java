@@ -1,6 +1,7 @@
 package com.mysycorp.Backendjo.config;
 
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ public class SecurityConfig  {
         http
             .csrf().disable()
             .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/admin/**").permitAll()
                 .requestMatchers("/api/register", "/api/login").permitAll()
                 .anyRequest().authenticated()
             )
