@@ -1,5 +1,8 @@
 package com.mysycorp.Backendjo.controller;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +33,13 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
         try {
-            authService.register(authRequest.getUsername(), authRequest.getPassword());
+            // Vérifiez si l'email est nul ou vide, sinon générez un email unique
+            String email = (null == authRequest.getEmail() || authRequest.getEmail().isEmpty()) 
+                ? generateUniqueEmail() 
+                : authRequest.getEmail();
+            
+            // Enregistrez l'utilisateur avec l'email
+            authService.register(authRequest.getUsername(), authRequest.getPassword(), email);
             return ResponseEntity.ok("Utilisateur enregistré avec succès.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -57,5 +66,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    public String generateUniqueEmail() {
+        String randomId = UUID.randomUUID().toString();
+        long timestamp = Instant.now().toEpochMilli();
+        return "user+" + randomId + timestamp + "@example.com";
+    }
 }
+
 

@@ -20,13 +20,20 @@ public class AuthService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(String username, String password) {
+    public User register(String username, String password, String email) { // Ajout de l'email en paramètre
         if (userRepository.findByUsername(username) != null) {
             throw new RuntimeException("Username already exists");
         }
+        if (userRepository.findByEmail(email) != null) { // Vérifier si l'email existe déjà
+            throw new RuntimeException("Email already exists");
+        }
+
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
+        user.setEmail(email); // Définir l'email
+        user.setType("user"); // Type par défaut
+
         return userRepository.save(user);
     }
 

@@ -1,12 +1,18 @@
 package com.mysycorp.Backendjo.entity;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class Ticket {
@@ -14,25 +20,46 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String seat;
-    private boolean used;  // Utilisez 'used' pour indiquer si le ticket est utilisé
-    private Double price;  // Ajout d'un attribut pour le prix
+    @Column(nullable = false)
+    private LocalDateTime startTimeEpreuve;
 
-    @ManyToOne
-    @JoinColumn(name = "epreuve_sportive_id")
-    private EpreuveSportive epreuveSportive;
-
+    // Relation ManyToOne avec Achat : un ticket est associé à un achat
     @ManyToOne
     @JoinColumn(name = "achat_id")
     private Achat achat;
 
+    // Relation ManyToOne avec Administration : un ticket est géré par une administration
     @ManyToOne
-    @JoinColumn(name = "tarif_id")
-    private Tarif tarif; // Relation avec Tarif
+    @JoinColumn(name = "administration_id", nullable = false)
+    private Administration administration;
 
-    @OneToOne
-    @JoinColumn(name = "token_ticket_id")
-    private TokenTicket tokenTicket;
+    // Relation ManyToOne avec ComplexeSportif : un ticket est associé à un complexe sportive
+    @ManyToOne
+    @JoinColumn(name = "complexe_sportif_id", nullable = false)
+    private ComplexeSportif complexeSportif;
+
+    // Relation ManyToOne avec EpreuveSportive : un ticket est associé à une épreuve sportive
+    @ManyToOne
+    @JoinColumn(name = "epreuve_sportive_id", nullable = false)
+    private EpreuveSportive epreuveSportive;
+
+    // Relation ManyToOne avec Hall : un ticket est lié à un hall
+    @ManyToOne
+    @JoinColumn(name = "hall_id", nullable = false)
+    private Hall hall;
+
+    // Relation ManyToMany avec Tarif : un ticket peut avoir plusieurs tarifs
+    @ManyToMany
+    @JoinTable(
+        name = "ticket_tarif",
+        joinColumns = @JoinColumn(name = "ticket_id"),
+        inverseJoinColumns = @JoinColumn(name = "tarif_id")
+    )
+    private Set<Tarif> tarifs = new HashSet<>();
+
+    @Column(nullable = false)
+    private int remainingPlaces;
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -42,20 +69,12 @@ public class Ticket {
         this.id = id;
     }
 
-    public String getSeat() {
-        return seat;
+    public LocalDateTime getStartTimeEpreuve() {
+        return startTimeEpreuve;
     }
 
-    public void setSeat(String seat) {
-        this.seat = seat;
-    }
-
-    public boolean isUsed() {
-        return used;  // Retournez la variable 'used'
-    }
-
-    public void setUsed(boolean used) {
-        this.used = used;  // Mettez à jour la variable 'used'
+    public void setStartTimeEpreuve(LocalDateTime startTimeEpreuve) {
+        this.startTimeEpreuve = startTimeEpreuve;
     }
 
     public Achat getAchat() {
@@ -66,20 +85,71 @@ public class Ticket {
         this.achat = achat;
     }
 
-    public Tarif getTarif() {
-        return tarif; // Getter pour le tarif
+    public Administration getAdministration() {
+        return administration;
     }
 
-    public void setTarif(Tarif tarif) {
-        this.tarif = tarif; // Setter pour le tarif
+    public void setAdministration(Administration administration) {
+        this.administration = administration;
     }
 
-    // Méthodes pour le prix
-    public Double getPrice() {
-        return price; // Getter pour le prix
+    public ComplexeSportif getComplexeSportif() {
+        return complexeSportif;
     }
 
-    public void setPrice(Double price) {
-        this.price = price; // Setter pour le prix
+    public void setComplexeSportif(ComplexeSportif complexeSportif) {
+        this.complexeSportif = complexeSportif;
+    }
+
+    public EpreuveSportive getEpreuveSportive() {
+        return epreuveSportive;
+    }
+
+    public void setEpreuveSportive(EpreuveSportive epreuveSportive) {
+        this.epreuveSportive = epreuveSportive;
+    }
+
+    public Hall getHall() {
+        return hall;
+    }
+
+    public void setHall(Hall hall) {
+        this.hall = hall;
+    }
+
+    public Set<Tarif> getTarifs() {
+        return tarifs;
+    }
+
+    public void setTarifs(Set<Tarif> tarifs) {
+        this.tarifs = tarifs;
+    }
+
+    public int getRemainingPlaces() {
+        return remainingPlaces;
+    }
+
+    public void setRemainingPlaces(int remainingPlaces) {
+        this.remainingPlaces = remainingPlaces;
+    }
+
+    public Object getSeat() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSeat'");
+    }
+
+    public void setSeat(Object seat) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setSeat'");
+    }
+
+    public Object getIsUsed() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getIsUsed'");
+    }
+
+    public void setIsUsed(Object isUsed) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setIsUsed'");
     }
 }

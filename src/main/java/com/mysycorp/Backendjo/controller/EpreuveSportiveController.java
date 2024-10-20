@@ -1,10 +1,10 @@
 package com.mysycorp.Backendjo.controller;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mysycorp.Backendjo.entity.EpreuveSportive;
 import com.mysycorp.Backendjo.repository.EpreuveSportiveRepository;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/epreuves-sportives")
 public class EpreuveSportiveController {
-@Autowired
+
+    @Autowired
     private EpreuveSportiveRepository epreuveSportiveRepository;
 
     @GetMapping
@@ -36,17 +39,32 @@ public class EpreuveSportiveController {
     }
 
     @PostMapping
-    public EpreuveSportive createEpreuve(@RequestBody EpreuveSportive epreuveSportive) {
-        return epreuveSportiveRepository.save(epreuveSportive);
+    public ResponseEntity<?> createEpreuve(@Valid @RequestBody EpreuveSportive epreuveSportive, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+        try {
+            EpreuveSportive savedEpreuve = epreuveSportiveRepository.save(epreuveSportive);
+            return ResponseEntity.ok(savedEpreuve);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EpreuveSportive> updateEpreuve(@PathVariable Long id, @RequestBody EpreuveSportive epreuveSportiveDetails) {
+    public ResponseEntity<?> updateEpreuve(@PathVariable Long id, @Valid @RequestBody EpreuveSportive epreuveSportiveDetails, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+
         return epreuveSportiveRepository.findById(id)
                 .map(epreuve -> {
-                    epreuve.setSport(epreuveSportiveDetails.getSport());
-                    epreuve.setDate(epreuveSportiveDetails.getDate());
+                    epreuve.setNameEpreuveSportive(epreuveSportiveDetails.getNameEpreuveSportive());
+                    epreuve.setTypeEpreuveSportive(epreuveSportiveDetails.getTypeEpreuveSportive());
+                    epreuve.setNiveauEpreuve(epreuveSportiveDetails.getNiveauEpreuve());
+                    epreuve.setImageUrl(epreuveSportiveDetails.getImageUrl());
                     epreuve.setHall(epreuveSportiveDetails.getHall());
+                    epreuve.setDurationInSeconds(epreuveSportiveDetails.getDurationInSeconds()); // Mise à jour de la durée
                     EpreuveSportive updatedEpreuve = epreuveSportiveRepository.save(epreuve);
                     return ResponseEntity.ok(updatedEpreuve);
                 }).orElse(ResponseEntity.notFound().build());
@@ -59,5 +77,5 @@ public class EpreuveSportiveController {
                     epreuveSportiveRepository.delete(epreuve);
                     return ResponseEntity.ok().build();
                 }).orElse(ResponseEntity.notFound().build());
-    }   
+    }
 }

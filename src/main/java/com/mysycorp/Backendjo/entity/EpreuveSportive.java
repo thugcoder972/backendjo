@@ -1,7 +1,11 @@
 package com.mysycorp.Backendjo.entity;
 
-import java.util.List;
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class EpreuveSportive {
@@ -16,39 +21,86 @@ public class EpreuveSportive {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sport;
-    private String date;
+    @Column(nullable = false, length = 255)
+    @NotNull(message = "Le nom de l'épreuve sportive ne doit pas être null")
+    private String nameEpreuveSportive;
 
+    @Column(nullable = false, length = 255)
+    @NotNull(message = "Le type d'épreuve sportive ne doit pas être null")
+    private String typeEpreuveSportive;
+
+    // Stocker la durée en secondes
+    @Column(nullable = false)
+    //@NotNull(message = "La durée de l'épreuve sportive ne doit pas être null")
+    private Long durationInSeconds;
+
+    @Column(nullable = false, length = 255)
+    @NotNull(message = "Le niveau de l'épreuve ne doit pas être null")
+    private String niveauEpreuve;
+
+    @Column(length = 500)
+    private String imageUrl;
+
+    // Relation ManyToOne avec Hall : une épreuve sportive se déroule dans un hall
     @ManyToOne
-    @JoinColumn(name = "hall_id") // Ajoute une colonne pour établir la relation
+    @JoinColumn(name = "hall_id", nullable = false)
+    @NotNull(message = "Le hall associé ne doit pas être null")
     private Hall hall;
-
-    @OneToMany(mappedBy = "epreuveSportive")
-    private List<Ticket> tickets; // Ajout de la relation avec Ticket
+    
+    // Relation OneToMany avec Ticket : une épreuve sportive peut avoir plusieurs tickets
+    @OneToMany(mappedBy = "epreuveSportive", cascade = CascadeType.ALL)
+    private Set<Ticket> tickets = new HashSet<>();
 
     // Getters and Setters
-    public Long getId() {
-        return id;
+    public Long getDurationInSeconds() {
+        return durationInSeconds;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setDurationInSeconds(Long durationInSeconds) {
+        if (durationInSeconds == null || durationInSeconds <= 0) {
+            throw new IllegalArgumentException("La durée ne peut pas être null ou inférieure à 0.");
+        }
+        this.durationInSeconds = durationInSeconds;
     }
 
-    public String getSport() {
-        return sport;
+    public Duration getDurationEpreuveSportive() {
+        return Duration.ofSeconds(durationInSeconds);
     }
 
-    public void setSport(String sport) {
-        this.sport = sport;
+    public void setDurationEpreuveSportive(Duration durationEpreuveSportive) {
+        this.durationInSeconds = durationEpreuveSportive.getSeconds();
     }
 
-    public String getDate() {
-        return date;
+    public String getNameEpreuveSportive() {
+        return nameEpreuveSportive;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setNameEpreuveSportive(String nameEpreuveSportive) {
+        this.nameEpreuveSportive = nameEpreuveSportive;
+    }
+
+    public String getTypeEpreuveSportive() {
+        return typeEpreuveSportive;
+    }
+
+    public void setTypeEpreuveSportive(String typeEpreuveSportive) {
+        this.typeEpreuveSportive = typeEpreuveSportive;
+    }
+
+    public String getNiveauEpreuve() {
+        return niveauEpreuve;
+    }
+
+    public void setNiveauEpreuve(String niveauEpreuve) {
+        this.niveauEpreuve = niveauEpreuve;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Hall getHall() {
@@ -59,11 +111,11 @@ public class EpreuveSportive {
         this.hall = hall;
     }
 
-    public List<Ticket> getTickets() {
-        return tickets;
+    public Long getId() {
+        return id;
     }
 
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
+    public void setId(Long id) {
+        this.id = id;
     }
 }
