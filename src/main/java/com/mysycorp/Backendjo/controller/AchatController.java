@@ -3,6 +3,7 @@ package com.mysycorp.Backendjo.controller;
 
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mysycorp.Backendjo.dto.AchatDTO;
 import com.mysycorp.Backendjo.entity.Achat;
+import com.mysycorp.Backendjo.mapper.AchatMapper;
 import com.mysycorp.Backendjo.repository.AchatRepository;
+import com.mysycorp.Backendjo.service.AchatService;
 
 
 @RestController
@@ -24,12 +28,21 @@ public class AchatController {
 @Autowired
     private AchatRepository achatRepository;
 
+   @Autowired
+    private AchatService achatService; // Votre service qui gère la logique métier
+
+    @Autowired
+    private AchatMapper achatMapper; // Votre mapper
+
+    // Récupérer tous les achats
     @GetMapping
-    public List<Achat> getAllAchats() {
-
-        return achatRepository.findAll();
+    public ResponseEntity<List<AchatDTO>> getAllAchats() {
+        List<Achat> achats = achatService.findAll(); // Récupérer tous les achats depuis le service
+        List<AchatDTO> achatDTOs = achats.stream()
+                                          .map(achatMapper::toDTO) // Convertir chaque Achat en AchatDTO
+                                          .collect(Collectors.toList());
+        return ResponseEntity.ok(achatDTOs); // Retourner la liste des AchatDTO
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Achat> getAchatById(@PathVariable Long id) {
         return achatRepository.findById(id)

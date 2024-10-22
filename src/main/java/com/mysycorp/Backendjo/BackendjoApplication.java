@@ -10,9 +10,10 @@ import tech.ailef.snapadmin.external.SnapAdminAutoConfiguration;
 @ImportAutoConfiguration(SnapAdminAutoConfiguration.class)
 public class BackendjoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BackendjoApplication.class, args);
-		System.out.println("hello,world");
-	}
+    public static void main(String[] args) {
+       SpringApplication.run(BackendjoApplication.class, args);
+       System.out.println("hello, world");
+    }
 
 }
+

@@ -27,7 +27,7 @@ public class SecurityConfig  {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/admin/**").permitAll()
                 .requestMatchers("/api/register", "/api/login").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
              // Ajout du filtre JWT avant le UsernamePasswordAuthenticationFilter
              //.addFilterBefore(JwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

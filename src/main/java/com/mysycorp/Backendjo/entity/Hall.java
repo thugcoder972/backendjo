@@ -46,7 +46,7 @@ public class Hall {
     public void setId(Long id) {
         this.id = id;
     }
-    @DisplayName
+    @DisplayName //annotation pour afficher le nom dans l'interface admin
     public String getName() {
         return name;
     }

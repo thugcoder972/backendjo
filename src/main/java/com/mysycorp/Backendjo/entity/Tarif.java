@@ -22,7 +22,7 @@ public class Tarif {
     private String nameTarif;
 
     @Column(nullable = false)
-    private double tarif;
+    private Double tarif;
 
     @Column(nullable = false, length = 255)
     private String offreTarif;
@@ -52,11 +52,11 @@ public class Tarif {
         this.nameTarif = nameTarif;
     }
 
-    public double getTarif() {
+    public Double getTarif() {
         return tarif;
     }
 
-    public void setTarif(double tarif) {
+    public void setTarif(Double tarif) {
         this.tarif = tarif;
     }
 

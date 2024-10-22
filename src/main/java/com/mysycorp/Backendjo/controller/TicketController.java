@@ -1,68 +1,51 @@
 package com.mysycorp.Backendjo.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.mysycorp.Backendjo.entity.Ticket;
-import com.mysycorp.Backendjo.repository.TicketRepository;
+import com.mysycorp.Backendjo.dto.TicketDTO;
+import com.mysycorp.Backendjo.service.TicketService;
 
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
+
     @Autowired
-    private TicketRepository ticketRepository;
+    private TicketService ticketService;
 
     // Récupérer tous les tickets
     @GetMapping
-    public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+    public List<TicketDTO> getAllTickets() {
+        return ticketService.getAllTickets();
     }
 
     // Récupérer un ticket par ID
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
-        return ticketRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long id) {
+        TicketDTO ticketDTO = ticketService.getTicketById(id);
+        return ResponseEntity.ok(ticketDTO);
     }
 
     // Créer un nouveau ticket
     @PostMapping
-    public Ticket createTicket(@RequestBody Ticket ticket) {
-        return ticketRepository.save(ticket);
+    public ResponseEntity<TicketDTO> createTicket(@RequestBody TicketDTO ticketDTO) {
+        TicketDTO createdTicket = ticketService.createTicket(ticketDTO);
+        return ResponseEntity.ok(createdTicket);
     }
 
     // Mettre à jour un ticket existant
     @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticketDetails) {
-        return ticketRepository.findById(id)
-                .map(ticket -> {
-                    ticket.setSeat(ticketDetails.getSeat());
-                    ticket.setIsUsed(ticketDetails.getIsUsed());
-                    ticket.setAchat(ticketDetails.getAchat()); // S'assurer que l'entité Achat est gérée
-                    // On peut aussi mettre à jour d'autres attributs si nécessaire
-                    Ticket updatedTicket = ticketRepository.save(ticket);
-                    return ResponseEntity.ok(updatedTicket);
-                }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long id, @RequestBody TicketDTO ticketDTO) {
+        TicketDTO updatedTicket = ticketService.updateTicket(id, ticketDTO);
+        return ResponseEntity.ok(updatedTicket);
     }
 
     // Supprimer un ticket par ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTicket(@PathVariable Long id) {
-        return ticketRepository.findById(id)
-                .map(ticket -> {
-                    ticketRepository.delete(ticket);
-                    return ResponseEntity.ok().build();
-                }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
+        ticketService.deleteTicket(id);
+        return ResponseEntity.ok().build();
     }
 }

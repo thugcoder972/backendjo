@@ -1,6 +1,7 @@
 package com.mysycorp.Backendjo.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mysycorp.Backendjo.dto.EpreuveSportiveDTO;
 import com.mysycorp.Backendjo.entity.EpreuveSportive;
 import com.mysycorp.Backendjo.repository.EpreuveSportiveRepository;
 
@@ -30,13 +33,26 @@ public class EpreuveSportiveController {
     public List<EpreuveSportive> getAllEpreuves() {
         return epreuveSportiveRepository.findAll();
     }
-
     @GetMapping("/{id}")
-    public ResponseEntity<EpreuveSportive> getEpreuveById(@PathVariable Long id) {
+    public ResponseEntity<EpreuveSportiveDTO> getEpreuveById(@PathVariable Long id) {
         return epreuveSportiveRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+            .map(epreuve -> new EpreuveSportiveDTO(
+                epreuve.getId(),
+                epreuve.getNameEpreuveSportive(),
+                epreuve.getTypeEpreuveSportive(),
+                epreuve.getNiveauEpreuve(),
+                epreuve.getImageUrl(),
+                epreuve.getHall().getName(), // Utilisation du nom du hall
+                epreuve.getDurationInSeconds().intValue() // Conversion Long en Integer
+            ))
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
+    
+   
+    
+    
+
 
     @PostMapping
     public ResponseEntity<?> createEpreuve(@Valid @RequestBody EpreuveSportive epreuveSportive, BindingResult result) {
@@ -78,4 +94,33 @@ public class EpreuveSportiveController {
                     return ResponseEntity.ok().build();
                 }).orElse(ResponseEntity.notFound().build());
     }
+   @GetMapping("/filter-by-type")
+public ResponseEntity<?> getEpreuvesByType(@RequestParam String type) {
+    if (type == null || type.trim().isEmpty()) {
+        return ResponseEntity.badRequest().body("Le type d'épreuve ne doit pas être vide.");
+    }
+
+    List<EpreuveSportive> epreuvesSportives = epreuveSportiveRepository.findByTypeEpreuveSportive(type);
+
+    if (epreuvesSportives.isEmpty()) {
+        return ResponseEntity.notFound().build();
+    }
+
+    // Convertir en DTO en utilisant le nom du hall
+    List<EpreuveSportiveDTO> epreuvesSportivesDTO = epreuvesSportives.stream()
+        .map(epreuve -> new EpreuveSportiveDTO(
+            epreuve.getId(),
+            epreuve.getNameEpreuveSportive(),
+            epreuve.getTypeEpreuveSportive(),
+            epreuve.getNiveauEpreuve(),
+            epreuve.getImageUrl(),
+            epreuve.getHall().getName(), // Utilisation du nom du hall
+            epreuve.getDurationInSeconds().intValue() // Conversion Long en Integer
+        ))
+        .collect(Collectors.toList());
+
+    return ResponseEntity.ok(epreuvesSportivesDTO);
 }
+
+}
+

@@ -16,21 +16,20 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "achats")
 public class Achat {
-  @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
+    private LocalDateTime dateAchat;
 
-    
     // Relation ManyToOne avec Tarif : un achat est associé à un tarif
     @ManyToOne
-    @JoinColumn(name = "tarif_id") // Associe un achat à un tarif
+    @JoinColumn(name = "tarif_id", nullable = false)
     private Tarif tarif;
-    
+
     // Relation ManyToOne avec User : un achat est fait par un utilisateur
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable= false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // Relation OneToMany avec Ticket : un achat peut avoir plusieurs tickets
@@ -46,12 +45,12 @@ public class Achat {
         this.id = id;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getDateAchat() {
+        return dateAchat;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDateAchat(LocalDateTime dateAchat) {
+        this.dateAchat = dateAchat;
     }
 
     public User getUser() {
@@ -68,6 +67,13 @@ public class Achat {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
-    }  
+    }
 
+    public Tarif getTarif() {
+        return tarif;
+    }
+
+    public void setTarif(Tarif tarif) {
+        this.tarif = tarif;
+    }
 }

@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import tech.ailef.snapadmin.external.annotations.DisplayName;
 
 @Entity
 public class Ticket {
@@ -30,7 +31,7 @@ public class Ticket {
 
     // Relation ManyToOne avec Administration : un ticket est géré par une administration
     @ManyToOne
-    @JoinColumn(name = "administration_id", nullable = false)
+    @JoinColumn(name = "administration_id", nullable = true)
     private Administration administration;
 
     // Relation ManyToOne avec ComplexeSportif : un ticket est associé à un complexe sportive
@@ -84,7 +85,7 @@ public class Ticket {
     public void setAchat(Achat achat) {
         this.achat = achat;
     }
-
+  
     public Administration getAdministration() {
         return administration;
     }
@@ -92,7 +93,7 @@ public class Ticket {
     public void setAdministration(Administration administration) {
         this.administration = administration;
     }
-
+    @DisplayName
     public ComplexeSportif getComplexeSportif() {
         return complexeSportif;
     }
@@ -100,7 +101,7 @@ public class Ticket {
     public void setComplexeSportif(ComplexeSportif complexeSportif) {
         this.complexeSportif = complexeSportif;
     }
-
+    @DisplayName
     public EpreuveSportive getEpreuveSportive() {
         return epreuveSportive;
     }
@@ -108,7 +109,7 @@ public class Ticket {
     public void setEpreuveSportive(EpreuveSportive epreuveSportive) {
         this.epreuveSportive = epreuveSportive;
     }
-
+    @DisplayName
     public Hall getHall() {
         return hall;
     }

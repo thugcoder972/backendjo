@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
+import tech.ailef.snapadmin.external.annotations.DisplayName;
 
 @Entity
 public class EpreuveSportive {
@@ -70,7 +71,7 @@ public class EpreuveSportive {
     public void setDurationEpreuveSportive(Duration durationEpreuveSportive) {
         this.durationInSeconds = durationEpreuveSportive.getSeconds();
     }
-
+    @DisplayName
     public String getNameEpreuveSportive() {
         return nameEpreuveSportive;
     }
