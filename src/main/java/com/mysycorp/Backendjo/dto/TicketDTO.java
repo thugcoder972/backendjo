@@ -1,4 +1,5 @@
 package com.mysycorp.Backendjo.dto;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ public class TicketDTO {
     private Long hallId;
     private Set<Long> tarifIds;
     private int remainingPlaces;
+    private String seat;
 
     // Getters and Setters
     public Long getId() {
@@ -84,5 +86,18 @@ public class TicketDTO {
 
     public void setRemainingPlaces(int remainingPlaces) {
         this.remainingPlaces = remainingPlaces;
+    }
+
+    public String getSeat() {
+        return seat;
+    }
+
+    public void setSeat(String seat) {
+        this.seat = seat;
+    }
+
+    public Object isUsed() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isUsed'");
     }
 }

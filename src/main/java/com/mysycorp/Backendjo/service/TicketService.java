@@ -23,32 +23,60 @@ public class TicketService {
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
     }
-    @Transactional(readOnly = true)//
+
+    @Transactional(readOnly = true)
     public List<TicketDTO> getAllTickets() {
         List<Ticket> tickets = ticketRepository.findAll();
         return tickets.stream().map(ticketMapper::toDTO).collect(Collectors.toList());
     }
+
     @Transactional(readOnly = true)
     public TicketDTO getTicketById(Long id) {
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Ticket not found with id " + id));
         return ticketMapper.toDTO(ticket);
     }
-    @Transactional //Utilisé pour les méthodes qui effectuent des modifications, comme la création d'un ticket.
+
+    @Transactional
     public TicketDTO createTicket(TicketDTO ticketDTO) {
         Ticket ticket = ticketMapper.toEntity(ticketDTO);
         Ticket savedTicket = ticketRepository.save(ticket);
         return ticketMapper.toDTO(savedTicket);
     }
+
+    @Transactional
     public TicketDTO updateTicket(Long id, TicketDTO ticketDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateTicket'");
+        Ticket existingTicket = ticketRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Ticket not found with id " + id));
+
+        // Mettre à jour les informations du ticket
+        existingTicket.setSeat(ticketDTO.getSeat());
+        existingTicket.setUsed(ticketDTO.isUsed());  // Mise à jour de isUsed
+
+        // En cas de mise à jour d'autres champs, on pourrait ajouter la logique ici
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+        return ticketMapper.toDTO(updatedTicket);
     }
+
+    @Transactional
+    public TicketDTO markTicketAsUsed(Long id) {
+        Ticket existingTicket = ticketRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Ticket not found with id " + id));
+
+        // Marquer le ticket comme utilisé
+        existingTicket.setUsed(true); // Assurez-vous que setUsed est disponible dans l'entité Ticket
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+        return ticketMapper.toDTO(updatedTicket);
+    }
+
     public void deleteTicket(Long id) {
-        // TODO Auto-generated method stub
+        // TODO: Implémenter la logique pour supprimer un ticket
         throw new UnsupportedOperationException("Unimplemented method 'deleteTicket'");
     }
 
-    // You can add more methods for update, delete, etc.
+    // D'autres méthodes peuvent être ajoutées pour gérer la mise à jour, la suppression, etc.
 }
+
 

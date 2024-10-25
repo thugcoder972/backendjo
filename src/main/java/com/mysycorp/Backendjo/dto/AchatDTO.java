@@ -2,12 +2,16 @@ package com.mysycorp.Backendjo.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AchatDTO {
     private Long id;
-    private Long userId;  // Référence à l'utilisateur qui a fait l'achat
+    private Long user;  // Référence à l'utilisateur qui a fait l'achat
     private List<TicketDTO> tickets;  // Liste des tickets associés à l'achat
     private LocalDateTime dateAchat;  // Date de l'achat
+    
+
 
     // Getters and Setters
     public Long getId() {
@@ -18,12 +22,12 @@ public class AchatDTO {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(Long user) {
+        this.user = user;
     }
 
     public List<TicketDTO> getTickets() {
@@ -41,4 +45,25 @@ public class AchatDTO {
     public void setDateAchat(LocalDateTime dateAchat) {
         this.dateAchat = dateAchat;
     }
+
+// Implémentation de getTicketIds
+    public Set<Long> getTicketIds() {
+        // Récupérer les IDs des tickets associés
+        return tickets.stream()
+                      .map(TicketDTO::getId)
+                      .collect(Collectors.toSet());
+    }
+
+    // Implémentation de setTicketIds
+    public void setTicketIds(Set<Long> ticketIds) {
+        // Créer une liste de TicketDTO à partir des IDs (nécessite un constructeur ou un setter dans TicketDTO)
+        this.tickets = ticketIds.stream()
+                                .map(id -> {
+                                    TicketDTO ticket = new TicketDTO();
+                                    ticket.setId(id);
+                                    return ticket;
+                                })
+                                .collect(Collectors.toList());
+    }
+
 }

@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,25 +18,40 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "achats")
 public class Achat {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int nombreTickets;
     private LocalDateTime dateAchat;
+    private double prixTotal;  // Ajout de l'attribut prixTotal
 
     // Relation ManyToOne avec Tarif : un achat est associé à un tarif
-    @ManyToOne
-    @JoinColumn(name = "tarif_id", nullable = false)
-    private Tarif tarif;
+    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @JoinColumn(name = "tarif_id", nullable = false)
+    // private Tarif tarif;
 
     // Relation ManyToOne avec User : un achat est fait par un utilisateur
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // Relation OneToMany avec Ticket : un achat peut avoir plusieurs tickets
-    @OneToMany(mappedBy = "achat")
+    @OneToMany(mappedBy = "achat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets = new ArrayList<>();
+
+    // Constructeurs
+    public Achat() {
+    }
+
+    public Achat(int nombreTickets, LocalDateTime dateAchat, double prixTotal, Tarif tarif, User user) {
+        this.nombreTickets = nombreTickets;
+        this.dateAchat = dateAchat;
+        this.prixTotal = prixTotal;
+        //this.tarif = tarif;
+        this.user = user;
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -45,6 +62,14 @@ public class Achat {
         this.id = id;
     }
 
+    public int getNombreTickets() {
+        return nombreTickets;
+    }
+
+    public void setNombreTickets(int nombreTickets) {
+        this.nombreTickets = nombreTickets;
+    }
+
     public LocalDateTime getDateAchat() {
         return dateAchat;
     }
@@ -52,6 +77,22 @@ public class Achat {
     public void setDateAchat(LocalDateTime dateAchat) {
         this.dateAchat = dateAchat;
     }
+
+    public double getPrixTotal() {
+        return prixTotal;
+    }
+
+    public void setPrixTotal(double prixTotal) {
+        this.prixTotal = prixTotal;
+    }
+
+    // public Tarif getTarif() {
+    //     return tarif;
+    // }
+
+    // public void setTarif(Tarif tarif) {
+    //     this.tarif = tarif;
+    // }
 
     public User getUser() {
         return user;
@@ -69,11 +110,14 @@ public class Achat {
         this.tickets = tickets;
     }
 
-    public Tarif getTarif() {
-        return tarif;
+    // Méthodes utilitaires
+    public void addTicket(Ticket ticket) {
+        tickets.add(ticket);
+        ticket.setAchat(this);
     }
 
-    public void setTarif(Tarif tarif) {
-        this.tarif = tarif;
+    public void removeTicket(Ticket ticket) {
+        tickets.remove(ticket);
+        ticket.setAchat(null);
     }
 }

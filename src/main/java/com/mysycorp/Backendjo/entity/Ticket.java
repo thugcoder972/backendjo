@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,14 +22,21 @@ import tech.ailef.snapadmin.external.annotations.DisplayName;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Identifiant unique du ticket
 
     @Column(nullable = false)
-    private LocalDateTime startTimeEpreuve;
+    private String seat; // Numéro ou identifiant du siège
+
+    @Column(nullable = false)
+    private Boolean isUsed; // Indique si le ticket a été utilisé
+
+    @Column(nullable = false)
+    private LocalDateTime startTimeEpreuve; // Heure de début de l'épreuve associée au ticket
 
     // Relation ManyToOne avec Achat : un ticket est associé à un achat
     @ManyToOne
     @JoinColumn(name = "achat_id")
+
     private Achat achat;
 
     // Relation ManyToOne avec Administration : un ticket est géré par une administration
@@ -34,7 +44,7 @@ public class Ticket {
     @JoinColumn(name = "administration_id", nullable = true)
     private Administration administration;
 
-    // Relation ManyToOne avec ComplexeSportif : un ticket est associé à un complexe sportive
+    // Relation ManyToOne avec ComplexeSportif : un ticket est associé à un complexe sportif
     @ManyToOne
     @JoinColumn(name = "complexe_sportif_id", nullable = false)
     private ComplexeSportif complexeSportif;
@@ -56,18 +66,52 @@ public class Ticket {
         joinColumns = @JoinColumn(name = "ticket_id"),
         inverseJoinColumns = @JoinColumn(name = "tarif_id")
     )
-    private Set<Tarif> tarifs = new HashSet<>();
+    private Set<Tarif> tarifs = new HashSet<>(); // Ensemble de tarifs associés au ticket
 
     @Column(nullable = false)
-    private int remainingPlaces;
+    private int remainingPlaces; // Nombre de places restantes pour cet événement
 
-    // Getters and Setters
+    // Constructeur par défaut
+    public Ticket() {
+    }
+
+    // Constructeur pour la désérialisation JSON
+    @JsonCreator
+    public Ticket(
+        @JsonProperty("seat") String seat,
+        @JsonProperty("isUsed") Boolean isUsed,
+        @JsonProperty("startTimeEpreuve") LocalDateTime startTimeEpreuve,
+        @JsonProperty("remainingPlaces") int remainingPlaces) {
+        
+        this.seat = seat; // Initialise le siège
+        this.isUsed = isUsed; // Initialise l'état d'utilisation
+        this.startTimeEpreuve = startTimeEpreuve; // Initialise l'heure de début de l'épreuve
+        this.remainingPlaces = remainingPlaces; // Initialise le nombre de places restantes
+    }
+
+    // Getters et Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSeat() {
+        return seat;
+    }
+
+    public void setSeat(String seat) {
+        this.seat = seat;
+    }
+
+    public Boolean getIsUsed() {
+        return isUsed;
+    }
+
+    public void setIsUsed(Boolean isUsed) {
+        this.isUsed = isUsed;
     }
 
     public LocalDateTime getStartTimeEpreuve() {
@@ -85,7 +129,7 @@ public class Ticket {
     public void setAchat(Achat achat) {
         this.achat = achat;
     }
-  
+
     public Administration getAdministration() {
         return administration;
     }
@@ -93,6 +137,7 @@ public class Ticket {
     public void setAdministration(Administration administration) {
         this.administration = administration;
     }
+
     @DisplayName
     public ComplexeSportif getComplexeSportif() {
         return complexeSportif;
@@ -101,6 +146,7 @@ public class Ticket {
     public void setComplexeSportif(ComplexeSportif complexeSportif) {
         this.complexeSportif = complexeSportif;
     }
+
     @DisplayName
     public EpreuveSportive getEpreuveSportive() {
         return epreuveSportive;
@@ -109,6 +155,7 @@ public class Ticket {
     public void setEpreuveSportive(EpreuveSportive epreuveSportive) {
         this.epreuveSportive = epreuveSportive;
     }
+
     @DisplayName
     public Hall getHall() {
         return hall;
@@ -134,23 +181,13 @@ public class Ticket {
         this.remainingPlaces = remainingPlaces;
     }
 
-    public Object getSeat() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSeat'");
+    // Méthode pour vérifier si le ticket est utilisé
+    public boolean isUsed() {
+        return Boolean.TRUE.equals(isUsed);
     }
 
-    public void setSeat(Object seat) {
+    public void setUsed(Object used) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSeat'");
-    }
-
-    public Object getIsUsed() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getIsUsed'");
-    }
-
-    public void setIsUsed(Object isUsed) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setIsUsed'");
+        throw new UnsupportedOperationException("Unimplemented method 'setUsed'");
     }
 }

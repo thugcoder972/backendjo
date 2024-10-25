@@ -126,4 +126,14 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public User orElse(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElse'");
+    }
+
+    public boolean isPresent() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isPresent'");
+    }
 }

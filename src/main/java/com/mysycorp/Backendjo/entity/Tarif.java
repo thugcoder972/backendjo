@@ -32,8 +32,8 @@ public class Tarif {
     private Set<Ticket> tickets = new HashSet<>();
 
     // Relation OneToMany avec Achat : un tarif peut être associé à plusieurs achats
-    @OneToMany(mappedBy = "tarif", cascade = CascadeType.ALL)
-    private Set<Achat> achats = new HashSet<>();
+    //@OneToMany(mappedBy = "tarif", cascade = CascadeType.ALL)
+    //private Set<Achat> achats = new HashSet<>();
 
     // Getters and Setters
     public Long getId() {
@@ -76,11 +76,11 @@ public class Tarif {
         this.tickets = tickets;
     }
 
-    public Set<Achat> getAchats() {
-        return achats;
-    }
+   // public Set<Achat> getAchats() {
+        //return achats;
+    //}
 
-    public void setAchats(Set<Achat> achats) {
-        this.achats = achats;
-    }
+    //public void setAchats(Set<Achat> achats) {
+       // this.achats = achats;
+    //}
 }

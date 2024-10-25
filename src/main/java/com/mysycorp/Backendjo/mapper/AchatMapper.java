@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import com.mysycorp.Backendjo.dto.AchatDTO;
 import com.mysycorp.Backendjo.dto.TicketDTO;
 import com.mysycorp.Backendjo.entity.Achat;
-import com.mysycorp.Backendjo.entity.Ticket;
 import com.mysycorp.Backendjo.entity.User;
 
 @Component
@@ -25,13 +24,14 @@ public class AchatMapper {
         AchatDTO dto = new AchatDTO();
         dto.setId(achat.getId());
         dto.setDateAchat(achat.getDateAchat());
-        dto.setUserId(achat.getUser().getId());
-        
+        dto.setUser(achat.getUser().getId());
+
         // Convertir les tickets en TicketDTO
         List<TicketDTO> ticketDTOs = achat.getTickets().stream()
                                            .map(ticketMapper::toDTO)
-                                           .collect(Collectors.toList());
+                .collect(Collectors.toList());
         dto.setTickets(ticketDTOs);
+
         return dto;
     }
 
@@ -40,7 +40,8 @@ public class AchatMapper {
         Achat achat = new Achat();
         achat.setId(achatDTO.getId());
         achat.setDateAchat(achatDTO.getDateAchat());
-        achat.setUser(user);
+
+            achat.setUser(user);
         // Vous pouvez également gérer les tickets ici si nécessaire
         return achat;
     }
