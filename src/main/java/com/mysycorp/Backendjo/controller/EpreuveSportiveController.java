@@ -43,14 +43,21 @@ public class EpreuveSportiveController {
                 epreuve.getNiveauEpreuve(),
                 epreuve.getImageUrl(),
                 epreuve.getHall().getName(), // Utilisation du nom du hall
-                epreuve.getDurationInSeconds().intValue() // Conversion Long en Integer
+                epreuve.getDurationInSeconds().intValue(),
+                epreuve.getTicketPrice()
             ))
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
     
    
-    
+    @GetMapping("/{id}/tarifs")
+public ResponseEntity<?> getTarifsByEpreuve(@PathVariable Long id) {
+    return epreuveSportiveRepository.findById(id)
+        .map(epreuve -> ResponseEntity.ok(epreuve.getTarifs()))
+        .orElse(ResponseEntity.notFound().build());
+}
+
     
 
 
@@ -115,7 +122,8 @@ public ResponseEntity<?> getEpreuvesByType(@RequestParam String type) {
             epreuve.getNiveauEpreuve(),
             epreuve.getImageUrl(),
             epreuve.getHall().getName(), // Utilisation du nom du hall
-            epreuve.getDurationInSeconds().intValue() // Conversion Long en Integer
+            epreuve.getDurationInSeconds().intValue(),
+            epreuve.getTicketPrice()
         ))
         .collect(Collectors.toList());
 

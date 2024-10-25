@@ -1,5 +1,7 @@
 package com.mysycorp.Backendjo.dto;
 
+import java.util.List;
+
 public class EpreuveSportiveDTO {
     private Long id;
     private String nameEpreuveSportive;
@@ -8,13 +10,15 @@ public class EpreuveSportiveDTO {
     private String imageUrl;
     private String hall;
     private Integer durationInSeconds;
+    private List<TarifDTO>tarifs;
+    private Double ticketPrice;
 
     // Constructeurs
     public EpreuveSportiveDTO() {
     }
 
     public EpreuveSportiveDTO(Long id, String nameEpreuveSportive, String typeEpreuveSportive,
-                              String niveauEpreuve, String imageUrl, String hall, Integer durationInSeconds) {
+                              String niveauEpreuve, String imageUrl, String hall, Integer durationInSecond,Double ticketPrice) {
         this.id = id;
         this.nameEpreuveSportive = nameEpreuveSportive;
         this.typeEpreuveSportive = typeEpreuveSportive;
@@ -22,6 +26,7 @@ public class EpreuveSportiveDTO {
         this.imageUrl = imageUrl;
         this.hall = hall;
         this.durationInSeconds = durationInSeconds;
+        this.ticketPrice = ticketPrice;
     }
 
     // Getters et Setters
@@ -80,5 +85,22 @@ public class EpreuveSportiveDTO {
     public void setDurationInSeconds(Integer durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
     }
+
+    public List<TarifDTO> getTarifs() {
+        return tarifs;
+    }
+
+    public void setTarifs(List<TarifDTO> tarifs) {
+        this.tarifs = tarifs;
+    }
+
+    public Double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(Double ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
 }
 

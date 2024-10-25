@@ -38,6 +38,10 @@ public class EpreuveSportive {
     @Column(nullable = false, length = 255)
     @NotNull(message = "Le niveau de l'épreuve ne doit pas être null")
     private String niveauEpreuve;
+    
+    @Column(nullable=true)
+    private Double ticketPrice;
+
 
     @Column(length = 500)
     private String imageUrl;
@@ -52,6 +56,9 @@ public class EpreuveSportive {
     @OneToMany(mappedBy = "epreuveSportive", cascade = CascadeType.ALL)
     private Set<Ticket> tickets = new HashSet<>();
 
+    //relation OneToMany avec Tarif : une épreuve sportive peut avoir plusieurs tarifs
+    @OneToMany(mappedBy = "epreuveSportive", cascade = CascadeType.ALL)
+    private Set<Tarif> tarifs = new HashSet<>(); // Liste de tarifs pour une épreuve sportive
     // Getters and Setters
     public Long getDurationInSeconds() {
         return durationInSeconds;
@@ -118,5 +125,21 @@ public class EpreuveSportive {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<Tarif> getTarifs() {
+        return tarifs;
+    }
+
+    public void setTarifs(Set<Tarif> tarifs) {
+        this.tarifs = tarifs;
+    }
+
+    public Double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(Double ticketPrice) {
+        this.ticketPrice = ticketPrice;
     }
 }

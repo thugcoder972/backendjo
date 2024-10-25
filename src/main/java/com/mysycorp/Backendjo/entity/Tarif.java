@@ -3,14 +3,14 @@ package com.mysycorp.Backendjo.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Tarif {
@@ -31,6 +31,11 @@ public class Tarif {
     @ManyToMany(mappedBy = "tarifs")
     private Set<Ticket> tickets = new HashSet<>();
 
+    // relation ManyToOne avec epreuve sportive : un tarif peu etre associé à plusieurs épreuves sportives
+    @ManyToOne
+    @JoinColumn(name = "epreuve_sportive_id", nullable = false)
+    private EpreuveSportive epreuveSportive;
+    
     // Relation OneToMany avec Achat : un tarif peut être associé à plusieurs achats
     //@OneToMany(mappedBy = "tarif", cascade = CascadeType.ALL)
     //private Set<Achat> achats = new HashSet<>();
@@ -83,4 +88,12 @@ public class Tarif {
     //public void setAchats(Set<Achat> achats) {
        // this.achats = achats;
     //}
+
+    public EpreuveSportive getEpreuveSportive() {
+        return epreuveSportive;
+    }
+
+    public void setEpreuveSportive(EpreuveSportive epreuveSportive) {
+        this.epreuveSportive = epreuveSportive;
+    }
 }
